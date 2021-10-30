@@ -9,6 +9,21 @@ Sudoku::Sudoku() {
     }
 }
 
+Sudoku::Sudoku(const Sudoku &that) {
+    board = new int *[9];
+    for (int i = 0; i < 9; ++i) {
+        board[i] = new int[9];
+        for (int j = 0; j < 9; ++j)
+            board[i][j] = that.board[i][j];
+    }
+}
+
+Sudoku::~Sudoku() {
+    for (int i = 0; i < 9; ++i)
+        delete[] board[i];
+    delete[] board;
+}
+
 int Sudoku::get(int i, int j) {
     if (i < 0 || i >= 9 || j < 0 || j >= 9)
         throw "Out of range";

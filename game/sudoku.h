@@ -4,6 +4,8 @@
 class Sudoku {
 public:
     Sudoku();
+    Sudoku(const Sudoku & that);
+    ~Sudoku();
     int get(int, int);
     void set(int, int, int);
 

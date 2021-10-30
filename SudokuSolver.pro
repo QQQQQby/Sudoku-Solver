@@ -18,11 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     game/sudoku.cpp \
+    solver/dfssolver.cpp \
     ui/gameframe.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
     game/sudoku.h \
+    solver/dfssolver.h \
+    solver/solver.h \
     ui/gameframe.h \
     ui/mainwindow.h
 

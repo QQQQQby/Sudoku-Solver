@@ -1,4 +1,5 @@
 #include "gameframe.h"
+#include "solver/dfssolver.h"
 
 #include <QEvent>
 #include <QMouseEvent>
@@ -8,16 +9,16 @@
 #include <QColor>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QDebug>
 #include <QString>
+
 
 int GameFrame::BORDER_WIDTH = 7;
 int GameFrame::NORMAL_LINE_WIDTH = 3;
 QFont GameFrame::NUMBER_FONT = QFont("Times New Romans", 20);
 
 GameFrame::GameFrame(QWidget *parent) : QFrame(parent) {
-    game = new Sudoku();
-    solvedGame = nullptr;
+    sudoku = new Sudoku();
+    solvedSudoku = nullptr;
 
     currPos = QPoint(-1, -1);
     pressedCoord = QPoint(-1, -1);
@@ -25,8 +26,8 @@ GameFrame::GameFrame(QWidget *parent) : QFrame(parent) {
 }
 
 GameFrame::~GameFrame() {
-    delete game;
-    delete solvedGame;
+    delete sudoku;
+    delete solvedSudoku;
 }
 
 void GameFrame::leaveEvent(QEvent *) {
@@ -41,7 +42,10 @@ void GameFrame::mouseMoveEvent(QMouseEvent *event) {
 
 void GameFrame::mousePressEvent(QMouseEvent *event) {
     QPoint pos = event->pos();
-    pressedCoord = getCoord(pos.x(), pos.y());
+    int *xs = getXs(), *ys = getYs();
+    pressedCoord = getCoord(pos.x(), pos.y(), xs, ys);
+    delete[] xs;
+    delete[] ys;
     repaint();
 }
 
@@ -49,19 +53,20 @@ void GameFrame::mouseReleaseEvent(QMouseEvent *event) {
     if (pressedCoord.x() == -1 || pressedCoord.y() == -1)
         return;
 
+    int *xs = getXs(), *ys = getYs();
     QPoint pos = event->pos();
-    QPoint clickedCoord = getCoord(pos.x(), pos.y());
+    QPoint clickedCoord = getCoord(pos.x(), pos.y(), xs, ys);
     int i = clickedCoord.x(), j = clickedCoord.y();
     if (clickedCoord == pressedCoord) {
         try {
             int num = QInputDialog::getInt(this, "", "");
             if (num < -1 || num > 9)
                 throw "Out of range!";
-            if (num != 0 && game->get(i, j) != num) {
-                game->set(i, j, num);
-                if (solvedGame != nullptr && solvedGame->get(i, j) != num) {
-                    delete solvedGame;
-                    solvedGame = nullptr;
+            if (num != 0 && sudoku->get(i, j) != num) {
+                sudoku->set(i, j, num);
+                if (solvedSudoku != nullptr && solvedSudoku->get(i, j) != num) {
+                    delete solvedSudoku;
+                    solvedSudoku = nullptr;
                 }
             }
         } catch (const char *s) {
@@ -69,6 +74,8 @@ void GameFrame::mouseReleaseEvent(QMouseEvent *event) {
         }
     }
     pressedCoord = QPoint(-1, -1);
+    delete[] xs;
+    delete[] ys;
     repaint();
 }
 
@@ -97,7 +104,7 @@ void GameFrame::paintEvent(QPaintEvent *) {
     painter.setFont(NUMBER_FONT);
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (game->get(i, j) != -1)
+            if (sudoku->get(i, j) != -1)
                 painter.fillRect(calcRect(i, j, xs, ys), Qt::gray);
 
     // Draw the selected block
@@ -124,19 +131,22 @@ void GameFrame::paintEvent(QPaintEvent *) {
     painter.setPen(pen);
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
-            int num = game->get(i, j);
+            int num = sudoku->get(i, j);
             if (num != -1)
                 painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(num));
         }
     }
 
     // Draw solved numbers
-    if (solvedGame == nullptr)
+    if (solvedSudoku == nullptr)
         return;
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (game->get(i, j) == 0)
-                painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(solvedGame->get(i, j)));
+            if (sudoku->get(i, j) == -1)
+                painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(solvedSudoku->get(i, j)));
+
+    delete[] xs;
+    delete[] ys;
 }
 
 int *GameFrame::getXs() {
@@ -147,7 +157,6 @@ int *GameFrame::getXs() {
 }
 
 int *GameFrame::getYs() {
-
     int *ans = new int[10];
     for (int col = 0; col < 10; ++col)
         ans[col] = col * (width() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
@@ -204,15 +213,16 @@ QRect GameFrame::calcRect(int row, int col, int *xs, int *ys) {
         y2 -= BORDER_WIDTH / 2;
     else
         y2 -= NORMAL_LINE_WIDTH / 2;
-
     return QRect(x1, y1, x2 - x1, y2 - y1);
 }
 
 void GameFrame::solve() {
+    if (solvedSudoku != nullptr)
+        return;
     try {
-        throw "???";
+        solvedSudoku = DfsSolver(sudoku).getSolvedSudoku();
     } catch (const char *s) {
-        solvedGame = nullptr;
         QMessageBox::warning(this, "Error", s);
     }
+    repaint();
 }

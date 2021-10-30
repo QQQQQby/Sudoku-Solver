@@ -20,7 +20,7 @@ protected:
     void paintEvent(QPaintEvent *);
 
 private:
-    Sudoku *game, *solvedGame;
+    Sudoku *sudoku, *solvedSudoku;
     QPoint currPos, pressedCoord;
 
     int *getXs();
