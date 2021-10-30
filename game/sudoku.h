@@ -1,15 +1,14 @@
 #ifndef GAME_H
 #define GAME_H
 
-
-class Game
-{
+class Sudoku {
 public:
-    Game();
+    Sudoku();
     int get(int, int);
     void set(int, int, int);
+
 private:
-    int** board;
+    int **board;
 };
 
 #endif // GAME_H

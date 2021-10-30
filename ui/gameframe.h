@@ -3,21 +3,37 @@
 
 #include<QFrame>
 
-#include <sudoku/game.h>
+#include <game/sudoku.h>
 
-class GameFrame : public QFrame
-{
+class GameFrame : public QFrame {
     Q_OBJECT
 
 public:
-    GameFrame(QWidget* parent = nullptr);
+    GameFrame(QWidget *parent = nullptr);
     ~GameFrame();
+
+protected:
+    void leaveEvent(QEvent *);
+    void mouseMoveEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
+    void paintEvent(QPaintEvent *);
+
+private:
+    Sudoku *game, *solvedGame;
+    QPoint currPos, pressedCoord;
+
+    int *getXs();
+    int *getYs();
+
+    QPoint getCoord(int, int, int * = nullptr, int * = nullptr);
+    QRect calcRect(int, int, int * = nullptr, int * = nullptr);
+
+    static int BORDER_WIDTH, NORMAL_LINE_WIDTH;
+    static QFont NUMBER_FONT;
 
 public slots:
     void solve();
-
-private:
-    Game* game;
 };
 
 #endif // GAMEFRAME_H

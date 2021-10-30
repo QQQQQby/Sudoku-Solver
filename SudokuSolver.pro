@@ -17,14 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    game/sudoku.cpp \
     ui/gameframe.cpp \
-    ui/mainwindow.cpp \
-    sudoku/game.cpp
+    ui/mainwindow.cpp
 
 HEADERS += \
+    game/sudoku.h \
     ui/gameframe.h \
-    ui/mainwindow.h \
-    sudoku/game.h
+    ui/mainwindow.h
 
 FORMS += \
     ui/mainwindow.ui
