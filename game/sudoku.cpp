@@ -1,4 +1,4 @@
-#include "game/sudoku.h"
+#include "sudoku.h"
 
 Sudoku::Sudoku() {
     board = new int *[9];

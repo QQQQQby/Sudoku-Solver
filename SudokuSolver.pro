@@ -18,14 +18,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     game/sudoku.cpp \
+    utils/dlx.cpp \
+    utils/dlxnode.cpp \
     solver/dfssolver.cpp \
+    solver/dlxsolver.cpp \
     ui/gameframe.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
     game/sudoku.h \
-    solver/dfssolver.h \
+    utils/dlx.h \
+    utils/dlxnode.h \
     solver/solver.h \
+    solver/dfssolver.h \
+    solver/dlxsolver.h \
     ui/gameframe.h \
     ui/mainwindow.h
 

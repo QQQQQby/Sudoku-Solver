@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "ui/gameframe.h"
+#include "gameframe.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
