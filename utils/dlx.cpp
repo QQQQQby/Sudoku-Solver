@@ -2,12 +2,14 @@
 
 #include <vector>
 
-Dlx::Dlx(vector<vector<int>>mat) {
+Dlx::Dlx(vector<vector<int>> mat) {
     check(mat);
-    this->m = mat.size();
-    this->n = mat[0].size();
-    head = new DlxNode();
 
+    m = mat.size();
+    n = mat[0].size();
+
+    // Initialize nodes
+    head = new DlxNode();
     colHeads = new DlxNode *[n];
     colCounts = new int[n];
     for (size_t j = 0; j < n; ++j) {
@@ -31,7 +33,7 @@ Dlx::Dlx(vector<vector<int>>mat) {
     // Link all the heads
     head->linkRight(colHeads[0]);
     colHeads[n - 1]->linkRight(head);
-    for (size_t j = 0; j < n; ++j)
+    for (size_t j = 0; j < n - 1; ++j)
         colHeads[j]->linkRight(colHeads[j + 1]);
 
     // Link the rest rows
@@ -73,9 +75,9 @@ Dlx::~Dlx() {
             delete matNodes[i][j];
         delete[] matNodes[i];
     }
+    delete[] matNodes;
     for (size_t j = 0; j < n; ++j)
         delete colHeads[j];
-    delete[] matNodes;
     delete[] colHeads;
     delete[] colCounts;
     delete head;
@@ -104,20 +106,17 @@ bool Dlx::dfsSolve() {
 
     vector<vector<DlxNode *>> sameRowNodes;
     for (DlxNode *p : colNodes) {
-        DlxNode *q = p->right;
         vector<DlxNode *> currRowNodes;
-        sameRowNodes.push_back(currRowNodes);
-        while (q != p) {
+        for (DlxNode *q = p->right; q != p; q = q->right)
             currRowNodes.push_back(q);
-            q = q->right;
-        }
+        sameRowNodes.push_back(currRowNodes);
     }
 
     // Remove nodes
     remove(chosenHead);
     for (DlxNode *p : colNodes)
         remove(p);
-    for (const vector<DlxNode *>& nodes : sameRowNodes)
+    for (const vector<DlxNode *> &nodes : sameRowNodes)
         for (DlxNode *p : nodes)
             remove(p);
 
@@ -132,8 +131,8 @@ bool Dlx::dfsSolve() {
                 for (DlxNode *s = r->right; s != r; s = s->right)
                     otherNodes.push_back(s);
             }
-            for (size_t j = k; j < otherNodes.size(); ++j)
-                remove(otherNodes[j]);
+            for (auto it = otherNodes.begin() + k; it != otherNodes.end(); ++it)
+                remove(*it);
         }
         for (DlxNode *p : sameRowNodes[i])
             remove(colHeads[p->col]);
@@ -145,27 +144,36 @@ bool Dlx::dfsSolve() {
         lineIds.pop_back();
 
         // Recover nodes
-        for (size_t j = sameRowNodes[i].size() - 1; j >= 0; --j)
-            recover(colHeads[sameRowNodes[i][j]->col]);
-        for (size_t j = otherNodes.size() - 1; j >= 0; --j)
-            recover(otherNodes[j]);
+        for (auto it = sameRowNodes[i].rbegin(); it != sameRowNodes[i].rend(); ++it)
+            recover(colHeads[(*it)->col]);
+        for (auto it = otherNodes.rbegin(); it != otherNodes.rend(); ++it)
+            recover(*it);
     }
+
     // Recover nodes
-    for (size_t i = sameRowNodes.size() - 1; i >= 0; --i)
-        for (size_t j = sameRowNodes[i].size() - 1; j >= 0; --j)
-            recover(sameRowNodes[i][j]);
-    for (size_t i = colNodes.size() - 1; i >= 0; --i)
-        recover(colNodes[i]);
+    for (auto rowIt = sameRowNodes.rbegin(); rowIt != sameRowNodes.rend(); ++rowIt)
+        for (auto it = rowIt->rbegin(); it != rowIt->rend(); ++it)
+            recover(*it);
+    for (auto it = colNodes.rbegin(); it != colNodes.rend(); ++it)
+        recover(*it);
     recover(chosenHead);
     return false;
 }
 
 void Dlx::check(vector<vector<int>> mat) {
-    size_t m = mat.size(), n = mat[0].size();
-    for (size_t i = 0; i < m; ++i)
+    size_t m = mat.size();
+    if (m == 0)
+        throw "invalid_argument";
+    size_t n = mat[0].size();
+    if (n == 0)
+        throw "invalid_argument";
+    for (size_t i = 0; i < m; ++i) {
+        if (mat[i].size() != n)
+            throw "invalid_argument";
         for (size_t j = 0; j < n; ++j)
             if (mat[i][j] != 0 && mat[i][j] != 1)
                 throw "invalid_argument";
+    }
 }
 
 void Dlx::remove(DlxNode *p) {
@@ -175,5 +183,5 @@ void Dlx::remove(DlxNode *p) {
 
 void Dlx::recover(DlxNode *p) {
     p->recover();
-    ++colCounts[p->col];
+    colCounts[p->col] += 1;
 }
