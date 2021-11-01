@@ -8,19 +8,22 @@ using namespace std;
 
 class Dlx {
 public:
-    Dlx(int **, int, int);
+    explicit Dlx(vector<vector<int>>);
     ~Dlx();
-    vector<int>* getLineIds();
+    vector<int> getLineIds();
 
 private:
-    int m, n;
+    size_t m, n;
     int *colCounts;
     DlxNode *head;
     DlxNode **colHeads;
     DlxNode ***matNodes;
-    vector<int>* lineIds;
+    vector<int> lineIds;
 
     bool dfsSolve();
+    static void check(vector<vector<int>>);
+    void remove(DlxNode *);
+    void recover(DlxNode *);
 };
 
 #endif // DLX_H
