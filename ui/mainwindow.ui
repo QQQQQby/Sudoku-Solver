@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="GameFrame" name="sudokuFrame">
+   <widget class="SudokuFrame" name="sudokuFrame">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -53,7 +53,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -61,9 +61,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GameFrame</class>
+   <class>SudokuFrame</class>
    <extends>QFrame</extends>
-   <header>ui/gameframe.h</header>
+   <header>ui/sudokuframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

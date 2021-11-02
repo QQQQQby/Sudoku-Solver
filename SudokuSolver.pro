@@ -18,21 +18,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     game/sudoku.cpp \
+    ui/sudokuframe.cpp \
     utils/dlx.cpp \
     utils/dlxnode.cpp \
     solver/dfssolver.cpp \
     solver/dlxsolver.cpp \
-    ui/gameframe.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
     game/sudoku.h \
+    ui/sudokuframe.h \
     utils/dlx.h \
     utils/dlxnode.h \
     solver/solver.h \
     solver/dfssolver.h \
     solver/dlxsolver.h \
-    ui/gameframe.h \
     ui/mainwindow.h
 
 FORMS += \
@@ -40,6 +40,7 @@ FORMS += \
 
 TRANSLATIONS += \
     SudokuSolver_zh_CN.ts
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -5,12 +5,12 @@
 
 #include <game/sudoku.h>
 
-class GameFrame : public QFrame {
+class SudokuFrame : public QFrame {
     Q_OBJECT
 
 public:
-    GameFrame(QWidget *parent = nullptr);
-    ~GameFrame();
+    SudokuFrame(QWidget *parent = nullptr);
+    ~SudokuFrame();
 
 protected:
     void leaveEvent(QEvent *);

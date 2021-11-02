@@ -1,6 +1,3 @@
-#include "gameframe.h"
-#include "solver/dfssolver.h"
-
 #include <QEvent>
 #include <QMouseEvent>
 #include <QPaintEvent>
@@ -11,12 +8,16 @@
 #include <QMessageBox>
 #include <QString>
 
+#include "sudokuframe.h"
+#include "solver/dfssolver.h"
+#include "solver/dlxsolver.h"
 
-int GameFrame::BORDER_WIDTH = 7;
-int GameFrame::NORMAL_LINE_WIDTH = 3;
-QFont GameFrame::NUMBER_FONT = QFont("Times New Romans", 20);
 
-GameFrame::GameFrame(QWidget *parent) : QFrame(parent) {
+int SudokuFrame::BORDER_WIDTH = 7;
+int SudokuFrame::NORMAL_LINE_WIDTH = 3;
+QFont SudokuFrame::NUMBER_FONT = QFont("Times New Romans", 20);
+
+SudokuFrame::SudokuFrame(QWidget *parent) : QFrame(parent) {
     sudoku = new Sudoku();
     solvedSudoku = nullptr;
 
@@ -25,22 +26,22 @@ GameFrame::GameFrame(QWidget *parent) : QFrame(parent) {
 
 }
 
-GameFrame::~GameFrame() {
+SudokuFrame::~SudokuFrame() {
     delete sudoku;
     delete solvedSudoku;
 }
 
-void GameFrame::leaveEvent(QEvent *) {
+void SudokuFrame::leaveEvent(QEvent *) {
     currPos = QPoint(-1, -1);
     repaint();
 }
 
-void GameFrame::mouseMoveEvent(QMouseEvent *event) {
+void SudokuFrame::mouseMoveEvent(QMouseEvent *event) {
     currPos = event->pos();
     repaint();
 }
 
-void GameFrame::mousePressEvent(QMouseEvent *event) {
+void SudokuFrame::mousePressEvent(QMouseEvent *event) {
     QPoint pos = event->pos();
     int *xs = getXs(), *ys = getYs();
     pressedCoord = getCoord(pos.x(), pos.y(), xs, ys);
@@ -49,7 +50,7 @@ void GameFrame::mousePressEvent(QMouseEvent *event) {
     repaint();
 }
 
-void GameFrame::mouseReleaseEvent(QMouseEvent *event) {
+void SudokuFrame::mouseReleaseEvent(QMouseEvent *event) {
     if (pressedCoord.x() == -1 || pressedCoord.y() == -1)
         return;
 
@@ -79,7 +80,7 @@ void GameFrame::mouseReleaseEvent(QMouseEvent *event) {
     repaint();
 }
 
-void GameFrame::paintEvent(QPaintEvent *) {
+void SudokuFrame::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QPen pen;
 
@@ -142,33 +143,28 @@ void GameFrame::paintEvent(QPaintEvent *) {
         return;
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (sudoku->get(i, j) == -1)
+            if (sudoku->get(i, j) == -1 && solvedSudoku->get(i, j) != -1)
                 painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(solvedSudoku->get(i, j)));
 
     delete[] xs;
     delete[] ys;
 }
 
-int *GameFrame::getXs() {
+int *SudokuFrame::getXs() {
     int *ans = new int[10];
     for (int row = 0; row < 10; ++row)
         ans[row] = row * (height() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
     return ans;
 }
 
-int *GameFrame::getYs() {
+int *SudokuFrame::getYs() {
     int *ans = new int[10];
     for (int col = 0; col < 10; ++col)
         ans[col] = col * (width() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
     return ans;
 }
 
-QPoint GameFrame::getCoord(int x, int y, int *xs, int *ys) {
-    if (xs == nullptr)
-        xs = getXs();
-    if (ys == nullptr)
-        ys = getYs();
-
+QPoint SudokuFrame::getCoord(int x, int y, int *xs, int *ys) {
     for (int i = 0; i < 9; ++i)
         if (xs[i] == x || ys[i] == y)
             return QPoint(-1, -1);
@@ -189,12 +185,7 @@ QPoint GameFrame::getCoord(int x, int y, int *xs, int *ys) {
     return QPoint(row, col);
 }
 
-QRect GameFrame::calcRect(int row, int col, int *xs, int *ys) {
-    if (xs == nullptr)
-        xs = getXs();
-    if (ys == nullptr)
-        ys = getYs();
-
+QRect SudokuFrame::calcRect(int row, int col, int *xs, int *ys) {
     int x1 = xs[col], y1 = ys[row], x2 = xs[col + 1], y2 = ys[row + 1];
     if (col % 3 == 0)
         x1 += BORDER_WIDTH / 2 + 1;
@@ -216,11 +207,11 @@ QRect GameFrame::calcRect(int row, int col, int *xs, int *ys) {
     return QRect(x1, y1, x2 - x1, y2 - y1);
 }
 
-void GameFrame::solve() {
+void SudokuFrame::solve() {
     if (solvedSudoku != nullptr)
         return;
     try {
-        solvedSudoku = DfsSolver(sudoku).getSolvedSudoku();
+        solvedSudoku = DlxSolver(sudoku).getSolvedSudoku();
     } catch (const char *s) {
         QMessageBox::warning(this, "Error", s);
     }

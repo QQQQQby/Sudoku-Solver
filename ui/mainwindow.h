@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "gameframe.h"
+#include "sudokuframe.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
