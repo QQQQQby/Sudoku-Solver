@@ -7,7 +7,7 @@ public:
     DlxNode *up, *down, *left, *right;
     int row, col;
 
-    DlxNode(int row = -1, int col = -1);
+    explicit DlxNode(int row = -1, int col = -1);
     void remove();
     void recover();
     void linkDown(DlxNode *);

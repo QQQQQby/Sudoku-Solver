@@ -34,12 +34,12 @@ void DlxNode::recover() {
     rightOri->left = this;
 }
 
-void DlxNode::linkDown(DlxNode *down) {
-    this->down = down;
-    down->up = this;
+void DlxNode::linkDown(DlxNode *p) {
+    this->down = p;
+    p->up = this;
 }
 
-void DlxNode::linkRight(DlxNode *right) {
-    this->right = right;
-    right->left = this;
+void DlxNode::linkRight(DlxNode *p) {
+    this->right = p;
+    p->left = this;
 }
