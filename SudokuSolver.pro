@@ -41,6 +41,11 @@ FORMS += \
 TRANSLATIONS += \
     SudokuSolver_zh_CN.ts
 
+RESOURCES += \
+    resources.qrc
+
+RC_FILE += \
+    app.rc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
