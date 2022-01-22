@@ -105,7 +105,7 @@ bool Dlx::dfsSolve() {
         return false;
 
     vector<vector<DlxNode *>> sameRowNodes;
-    for (DlxNode *p : colNodes) {
+    for (DlxNode *p: colNodes) {
         vector<DlxNode *> currRowNodes;
         for (DlxNode *q = p->right; q != p; q = q->right)
             currRowNodes.push_back(q);
@@ -114,16 +114,16 @@ bool Dlx::dfsSolve() {
 
     // Remove nodes
     remove(chosenHead);
-    for (DlxNode *p : colNodes)
+    for (DlxNode *p: colNodes)
         remove(p);
-    for (const vector<DlxNode *> &nodes : sameRowNodes)
-        for (DlxNode *p : nodes)
+    for (const vector<DlxNode *> &nodes: sameRowNodes)
+        for (DlxNode *p: nodes)
             remove(p);
 
     for (size_t i = 0; i < colNodes.size(); ++i) {
         // Remove some nodes if we chose one line
         vector<DlxNode *> otherNodes;
-        for (DlxNode *p : sameRowNodes[i]) {
+        for (DlxNode *p: sameRowNodes[i]) {
             DlxNode *q = colHeads[p->col];
             size_t k = otherNodes.size();
             for (DlxNode *r = q->down; r != q; r = r->down) {
@@ -134,7 +134,7 @@ bool Dlx::dfsSolve() {
             for (auto it = otherNodes.begin() + k; it != otherNodes.end(); ++it)
                 remove(*it);
         }
-        for (DlxNode *p : sameRowNodes[i])
+        for (DlxNode *p: sameRowNodes[i])
             remove(colHeads[p->col]);
 
         // Run Depth-First Search
