@@ -9,6 +9,7 @@
 #include <QString>
 
 #include "sudokuframe.h"
+#include "digitdialog.h"
 #include "solver/dfssolver.h"
 #include "solver/dlxsolver.h"
 
@@ -18,7 +19,7 @@ int SudokuFrame::NORMAL_LINE_WIDTH = 3;
 QFont SudokuFrame::NUMBER_FONT = QFont("Times New Romans", 20);
 
 SudokuFrame::SudokuFrame(QWidget *parent) : QFrame(parent) {
-    sudoku = new Sudoku();
+    sudoku = new Sudoku;
     solvedSudoku = nullptr;
 
     currPos = QPoint(-1, -1);
@@ -60,10 +61,11 @@ void SudokuFrame::mouseReleaseEvent(QMouseEvent *event) {
     int i = clickedCoord.x(), j = clickedCoord.y();
     if (clickedCoord == pressedCoord) {
         try {
-            int num = QInputDialog::getInt(this, "", "");
-            if (num < -1 || num > 9)
-                throw "Out of range!";
-            if (num != 0 && sudoku->get(i, j) != num) {
+            DigitDialog *dialog = new DigitDialog(this);
+            dialog->exec();
+
+            int num = dialog->getSelected();
+            if (num != -1 && sudoku->get(i, j) != num) {
                 sudoku->set(i, j, num);
                 if (solvedSudoku != nullptr && solvedSudoku->get(i, j) != num) {
                     delete solvedSudoku;
@@ -105,7 +107,7 @@ void SudokuFrame::paintEvent(QPaintEvent *) {
     painter.setFont(NUMBER_FONT);
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (sudoku->get(i, j) != -1)
+            if (sudoku->get(i, j) != 0)
                 painter.fillRect(calcRect(i, j, xs, ys), Qt::gray);
 
     // Draw the selected block
@@ -133,7 +135,7 @@ void SudokuFrame::paintEvent(QPaintEvent *) {
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
             int num = sudoku->get(i, j);
-            if (num != -1)
+            if (num != 0)
                 painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(num));
         }
     }
@@ -143,7 +145,7 @@ void SudokuFrame::paintEvent(QPaintEvent *) {
         return;
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (sudoku->get(i, j) == -1 && solvedSudoku->get(i, j) != -1)
+            if (sudoku->get(i, j) == 0 && solvedSudoku->get(i, j) != 0)
                 painter.drawText(calcRect(i, j, xs, ys), Qt::AlignCenter, QString::number(solvedSudoku->get(i, j)));
 
     delete[] xs;

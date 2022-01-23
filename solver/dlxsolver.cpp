@@ -6,7 +6,7 @@ DlxSolver::DlxSolver(Sudoku *sudoku) {
     vector<vector<int>> mat, posList;
     for (int i = 0; i < 9; ++i)
         for (int j = 0; j < 9; ++j)
-            if (sudoku->get(i, j) == -1){
+            if (sudoku->get(i, j) == 0){
                 for (int k = 1; k <= 9; ++k){
                     mat.push_back(calcLine(i, j, k));
                     posList.push_back({i, j, k});

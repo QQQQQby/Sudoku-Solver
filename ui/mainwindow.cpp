@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->sudokuFrame->setMouseTracking(true);
+    setWindowTitle("Sudoku Solver");
     setWindowIcon(QIcon(":/icons/logo.ico"));
 
     connect(ui->solveButton, SIGNAL(clicked()), ui->sudokuFrame, SLOT(solve()));

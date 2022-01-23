@@ -5,7 +5,7 @@ Sudoku::Sudoku() {
     for (int i = 0; i < 9; ++i) {
         board[i] = new int[9];
         for (int j = 0; j < 9; ++j)
-            board[i][j] = -1;
+            board[i][j] = 0;
     }
 }
 
@@ -33,8 +33,8 @@ int Sudoku::get(int i, int j) {
 void Sudoku::set(int i, int j, int val) {
     if (i < 0 || i >= 9 || j < 0 || j >= 9)
         throw "Out of range";
-    if (val == -1) {
-        board[i][j] = -1;
+    if (val == 0) {
+        board[i][j] = 0;
         return;
     }
     if (val < 1 || val > 9)

@@ -23,7 +23,8 @@ SOURCES += \
     utils/dlxnode.cpp \
     solver/dfssolver.cpp \
     solver/dlxsolver.cpp \
-    ui/mainwindow.cpp
+    ui/mainwindow.cpp \
+    ui/digitdialog.cpp
 
 HEADERS += \
     game/sudoku.h \
@@ -33,10 +34,12 @@ HEADERS += \
     solver/solver.h \
     solver/dfssolver.h \
     solver/dlxsolver.h \
-    ui/mainwindow.h
+    ui/mainwindow.h \
+    ui/digitdialog.h
 
 FORMS += \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/digitdialog.ui
 
 TRANSLATIONS += \
     SudokuSolver_zh_CN.ts
