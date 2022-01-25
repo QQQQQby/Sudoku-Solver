@@ -155,14 +155,14 @@ void SudokuFrame::paintEvent(QPaintEvent *) {
 int *SudokuFrame::getXs() {
     int *ans = new int[10];
     for (int row = 0; row < 10; ++row)
-        ans[row] = row * (height() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
+        ans[row] = row * (width() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
     return ans;
 }
 
 int *SudokuFrame::getYs() {
     int *ans = new int[10];
     for (int col = 0; col < 10; ++col)
-        ans[col] = col * (width() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
+        ans[col] = col * (height() - BORDER_WIDTH) / 9 + BORDER_WIDTH / 2;
     return ans;
 }
 
@@ -217,5 +217,13 @@ void SudokuFrame::solve() {
     } catch (const char *s) {
         QMessageBox::warning(this, "Error", s);
     }
+    repaint();
+}
+
+void SudokuFrame::clear() {
+    delete sudoku;
+    delete solvedSudoku;
+    sudoku = new Sudoku;
+    solvedSudoku = nullptr;
     repaint();
 }

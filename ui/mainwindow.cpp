@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon(":/icons/logo.ico"));
 
     connect(ui->solveButton, SIGNAL(clicked()), ui->sudokuFrame, SLOT(solve()));
+    connect(ui->clearButton, SIGNAL(clicked()), ui->sudokuFrame, SLOT(clear()));
 }
 
 MainWindow::~MainWindow() {
