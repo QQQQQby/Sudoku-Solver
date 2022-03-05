@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QString>
+#include <QRect>
 
 #include "sudokuframe.h"
 #include "digitdialog.h"
@@ -56,12 +57,12 @@ void SudokuFrame::mouseReleaseEvent(QMouseEvent *event) {
         return;
 
     int *xs = getXs(), *ys = getYs();
-    QPoint pos = event->pos();
-    QPoint clickedCoord = getCoord(pos.x(), pos.y(), xs, ys);
+    QPoint clickedCoord = getCoord(event->x(), event->y(), xs, ys);
     int i = clickedCoord.x(), j = clickedCoord.y();
     if (clickedCoord == pressedCoord) {
         try {
             DigitDialog *dialog = new DigitDialog(this);
+            dialog->setGeometry(event->globalX(), event->globalY(), dialog->width(), dialog->height());
             dialog->exec();
 
             int num = dialog->getSelected();

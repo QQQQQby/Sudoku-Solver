@@ -5,6 +5,7 @@ DigitDialog::DigitDialog(QWidget *parent)
         : QDialog(parent), ui(new Ui::DigitDialog) {
     ui->setupUi(this);
     setWindowTitle("Select digit");
+    setWindowFlags(windowFlags()&~Qt::WindowContextHelpButtonHint);
     selected = -1;
 
     connect(ui->pushButton_1, SIGNAL(clicked()), this, SLOT(selectOne()));
